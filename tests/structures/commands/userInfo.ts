@@ -3,13 +3,11 @@ import { fetchUser } from "../../api/handleRequests";
 
 import User from "../../types/User";
 
-const userInfoCommand = (id: string) => {
-    let userInfo: User = { user: {} };
-    fetchUser(id)
-        .then((response) => userInfo = response)
+const userInfoCommand = async (id: string) => {
+    let userInfo: User = await fetchUser(id)
 
     const { name, joinDate } = userInfo.user;
-    // const createdAtYYYMMDD = `${createdAt.getFullYear()}-${createdAt.getMonth()}-${createdAt.getDay()}`
+
     return {
         messageId: v1(),
         content: {
@@ -20,20 +18,30 @@ const userInfoCommand = (id: string) => {
                 nodes: [
                     {
                         object: "block",
-                        type: "webhookMessage",
-                        data: {
-                            embeds: [
+                        type: "paragraph",
+                        data: {},
+                        nodes: [
+                            {
+                              object: "text",
+                              leaves: [
                                 {
-                                    title: `Information about ${name}`,
-                                    fields: [
-                                        {
-                                            name: "Joined at",
-                                            description: joinDate
-                                        }
-                                    ]
+                                  object: "leaf",
+                                  text: `Information about ${name}`,
+                                  marks: []
                                 }
-                            ]
-                        }
+                              ]
+                            },
+                            {
+                              object: "text",
+                              leaves: [
+                                {
+                                  object: "leaf",
+                                  text: `Joined at ${joinDate}`,
+                                  marks: []
+                                }
+                              ]
+                            }
+                        ]
                     }
                 ]
             }
